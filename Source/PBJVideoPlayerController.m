@@ -213,6 +213,7 @@ static NSString * const PBJVideoPlayerControllerReadyForDisplay = @"readyForDisp
                 AVKeyValueStatus keyStatus = [asset statusOfValueForKey:key error:&error];
                 if (keyStatus == AVKeyValueStatusFailed) {
                     _playbackState = PBJVideoPlayerPlaybackStateFailed;
+                    self->_error = error;
                     [_delegate videoPlayerPlaybackStateDidChange:self];
                     return;
                 }
@@ -221,6 +222,7 @@ static NSString * const PBJVideoPlayerControllerReadyForDisplay = @"readyForDisp
             // check playable
             if (!_asset.playable) {
                 _playbackState = PBJVideoPlayerPlaybackStateFailed;
+                self->_error = _playerItem.error;
                 [_delegate videoPlayerPlaybackStateDidChange:self];
                 return;
             }
@@ -460,6 +462,7 @@ typedef void (^PBJVideoPlayerBlock)();
 - (void)_playerItemFailedToPlayToEndTime:(NSNotification *)aNotification
 {
     _playbackState = PBJVideoPlayerPlaybackStateFailed;
+    self->_error = (NSError *)[[aNotification userInfo] objectForKey:AVPlayerItemFailedToPlayToEndTimeErrorKey];
     [_delegate videoPlayerPlaybackStateDidChange:self];
     DLog(@"error (%@)", [[aNotification userInfo] objectForKey:AVPlayerItemFailedToPlayToEndTimeErrorKey]);
 }
@@ -524,7 +527,9 @@ typedef void (^PBJVideoPlayerBlock)();
             case AVPlayerStatusFailed:
             {
                 _playbackState = PBJVideoPlayerPlaybackStateFailed;
+                self->_error = [(AVPlayerItem *)object error];
                 [_delegate videoPlayerPlaybackStateDidChange:self];
+              
                 break;
             }
             case AVPlayerStatusUnknown:
