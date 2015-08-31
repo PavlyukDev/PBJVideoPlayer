@@ -58,7 +58,7 @@ typedef NS_ENUM(NSInteger, PBJVideoPlayerBufferingState) {
 
 @property (nonatomic) float volume;
 
-@property (nonatomic, readonly) NSError *error;
+@property (nonatomic, weak, readonly) NSError *error;
 
 - (void)playFromBeginning;
 - (void)playFromCurrentTime;

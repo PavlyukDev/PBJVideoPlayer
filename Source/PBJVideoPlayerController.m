@@ -471,7 +471,7 @@ typedef void (^PBJVideoPlayerBlock)();
 
 - (void)_applicationWillResignActive:(NSNotification *)aNotfication
 {
-    if (_playbackState == PBJVideoPlayerPlaybackStatePlaying)
+    if (_playbackState == PBJVideoPlayerPlaybackStatePlaying && _bufferingState == PBJVideoPlayerBufferingStateReady)
         [self pause];
 }
 
